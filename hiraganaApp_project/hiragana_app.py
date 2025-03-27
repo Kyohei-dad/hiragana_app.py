@@ -35,27 +35,24 @@ def set_background(image_path):
                 font-size: 48px;
             }}
         }}
-        .choice-container {{
+        .choice-row {{
             display: flex;
             flex-direction: row;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
             flex-wrap: wrap;
+            gap: 20px;
             margin-top: 20px;
         }}
-        .choice-button {{
+        .choice-row .stButton>button {{
+            font-size: 36px;
+            padding: 1em 2em;
+            min-width: 100px;
             background-color: #f28ab2;
             color: white;
-            font-size: 36px;
             border-radius: 20px;
             border: none;
-            padding: 1em 2em;
-            margin: 0.5em;
-            min-width: 100px;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-        }}
-        .choice-button:hover {{
-            background-color: #f15ca4;
         }}
         </style>
         """, unsafe_allow_html=True)
@@ -129,7 +126,7 @@ else:
     choices = wrong_choices + [correct]
     random.shuffle(choices)
 
-    st.markdown('<div class="choice-container">', unsafe_allow_html=True)
+    st.markdown('<div class="choice-row">', unsafe_allow_html=True)
     for choice in choices:
         if st.button(choice, key=choice):
             if choice == correct:
