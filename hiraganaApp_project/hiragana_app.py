@@ -27,7 +27,7 @@ def set_background(image_path):
             padding: 1em 2em;
             margin: 20px auto;
             text-align: center;
-            font-size: 200px;
+            font-size: 250px;
             font-weight: bold;
             border-radius: 20px;
             width: fit-content;
