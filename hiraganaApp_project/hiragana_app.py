@@ -27,7 +27,7 @@ def set_background(image_path):
             padding: 1em 2em;
             margin: 20px auto;
             text-align: center;
-            font-size: 250px;
+            font-size: 96px;
             font-weight: bold;
             border-radius: 20px;
             width: fit-content;
@@ -37,6 +37,7 @@ def set_background(image_path):
             display: flex;
             flex-direction: row;
             justify-content: center;
+            align-items: center;
             gap: 20px;
             flex-wrap: wrap;
             margin-top: 20px;
@@ -51,22 +52,17 @@ def set_background(image_path):
             border: none;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
         }}
-       @media screen and (max-width: 600px) {
-    .character {
-        width: 80px;
-        bottom: 90px;
-    }
-    .quiz-box {
-        font-size: 60px;
-    }
-    .choices-container {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        flex-direction: row !important;
-        gap: 20px;
-    }
-}
+        @media screen and (max-width: 600px) {{
+            .character {{
+                width: 80px;
+                bottom: 90px;
+            }}
+            .quiz-box {{
+                font-size: 72px;
+            }}
+            .choices-container {{
+                flex-direction: column;
+            }}
         }}
         </style>
         """, unsafe_allow_html=True)
