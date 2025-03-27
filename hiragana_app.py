@@ -2,6 +2,9 @@ import streamlit as st
 import random
 import os
 import base64
+import time
+import matplotlib.pyplot as plt
+import io
 
 # 背景画像の設定
 def set_background(image_path):
@@ -104,6 +107,7 @@ def set_background(image_path):
             .choices-container .stButton>button {{
                 font-size: 42px;
                 min-width: 100px;
+                padding: 0.5em 1em;
             }}
         }}
         </style>
@@ -120,16 +124,24 @@ def load_character_image(image_path):
 def play_sound(file):
     path = os.path.join("sounds", file)
     if os.path.exists(path):
-        st.audio(path, format="audio/mp3", start_time=0)
+        st.markdown(f"""
+        <audio autoplay>
+            <source src="data:audio/mp3;base64,{base64.b64encode(open(path,'rb').read()).decode()}" type="audio/mp3">
+        </audio>
+        """, unsafe_allow_html=True)
 
-# 設定スタート
+# 背景セット
 set_background("bg/background.png")
 st.markdown("<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>", unsafe_allow_html=True)
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
 
-# データセット
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
+    ("が", "ガ"), ("ぎ", "ギ"), ("ぐ", "グ"), ("げ", "ゲ"), ("ご", "ゴ"),
+    ("ざ", "ザ"), ("じ", "ジ"), ("ず", "ズ"), ("ぜ", "ゼ"), ("ぞ", "ゾ"),
+    ("だ", "ダ"), ("ぢ", "ヂ"), ("づ", "ヅ"), ("で", "デ"), ("ど", "ド"),
+    ("ば", "バ"), ("び", "ビ"), ("ぶ", "ブ"), ("べ", "ベ"), ("ぼ", "ボ"),
+    ("ぱ", "パ"), ("ぴ", "ピ"), ("ぷ", "プ"), ("ぺ", "ペ"), ("ぽ", "ポ"),
     ("か", "カ"), ("き", "キ"), ("く", "ク"), ("け", "ケ"), ("こ", "コ"),
     ("さ", "サ"), ("し", "シ"), ("す", "ス"), ("せ", "セ"), ("そ", "ソ"),
     ("た", "タ"), ("ち", "チ"), ("つ", "ツ"), ("て", "テ"), ("と", "ト"),
@@ -141,7 +153,6 @@ kana_pairs = [
     ("わ", "ワ"), ("を", "ヲ"), ("ん", "ン")
 ]
 
-# セッション状態初期化
 if 'score_history' not in st.session_state:
     st.session_state.score_history = []
 if 'questions' not in st.session_state:
@@ -150,16 +161,26 @@ if 'current_index' not in st.session_state:
     st.session_state.current_index = 0
 if 'correct_count' not in st.session_state:
     st.session_state.correct_count = 0
+if 'correct_log' not in st.session_state:
+    st.session_state.correct_log = []
 if 'current_question' not in st.session_state:
     st.session_state.current_question = None
 
-# ホーム画面
 if not st.session_state.questions:
     st.markdown("<div class='main-menu'>", unsafe_allow_html=True)
     st.write("### 今までのスコア")
     if st.session_state.score_history:
         for i, s in enumerate(st.session_state.score_history):
             st.write(f"{i+1}回目: {s}/10")
+
+        # グラフ表示
+        fig, ax = plt.subplots()
+        ax.plot(range(1, len(st.session_state.score_history)+1), st.session_state.score_history, marker='o')
+        ax.set_title("スコアの推移")
+        ax.set_xlabel("回")
+        ax.set_ylabel("正解数")
+        st.pyplot(fig)
+
     else:
         st.write("(まだ記録なし)")
 
@@ -167,11 +188,11 @@ if not st.session_state.questions:
         st.session_state.questions = random.sample(kana_pairs, 10)
         st.session_state.current_index = 0
         st.session_state.correct_count = 0
+        st.session_state.correct_log = []
         st.session_state.current_question = st.session_state.questions[0]
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
-# クイズ画面
 else:
     hira, correct = st.session_state.current_question
     st.markdown(f"<div class='quiz-box'>{hira}</div>", unsafe_allow_html=True)
@@ -186,7 +207,9 @@ else:
             if choice == correct:
                 st.success("⭕ ピンポン！")
                 play_sound("correct.mp3")
+                st.balloons()
                 st.session_state.correct_count += 1
+                st.session_state.correct_log.append(1)
                 st.session_state.current_index += 1
                 if st.session_state.current_index < 10:
                     st.session_state.current_question = st.session_state.questions[st.session_state.current_index]
@@ -197,4 +220,5 @@ else:
             else:
                 st.error("❌ ブブー！ もう一度！")
                 play_sound("wrong.mp3")
+                st.session_state.correct_log.append(0)
     st.markdown('</div>', unsafe_allow_html=True)
