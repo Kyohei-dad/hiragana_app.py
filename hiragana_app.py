@@ -120,14 +120,7 @@ def load_character_image(image_path):
 def play_sound(file):
     path = os.path.join("sounds", file)
     if os.path.exists(path):
-        with open(path, "rb") as f:
-            data = f.read()
-            b64 = base64.b64encode(data).decode()
-            st.markdown(f"""
-                <audio autoplay>
-                    <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-                </audio>
-            """, unsafe_allow_html=True)
+        st.audio(path, format="audio/mp3", start_time=0)
 
 # 設定スタート
 set_background("bg/background.png")
