@@ -15,7 +15,7 @@ def set_background(image_path):
             background-size: cover;
             background-position: center;
         }}
-        .character {{
+        .character-img {{
             position: fixed;
             bottom: 10px;
             right: 10px;
@@ -54,7 +54,7 @@ def set_background(image_path):
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
         }}
         @media screen and (max-width: 600px) {{
-            .character {{
+            .character-img {{
                 width: 80px;
                 bottom: 10px;
                 right: 10px;
@@ -75,11 +75,11 @@ def set_background(image_path):
         </style>
         """, unsafe_allow_html=True)
 
-set_background("hiraganaApp_project/bg/background.png")
+set_background("bg/background.png")
 
 st.markdown("""
 <div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>
-<img src='hiraganaApp_project/bg/character.png' class='character'>
+<img src='bg/character.png' class='character-img'>
 """, unsafe_allow_html=True)
 
 kana_pairs = [
@@ -107,7 +107,7 @@ if 'current_question' not in st.session_state:
     st.session_state.current_question = None
 
 def play_sound(file):
-    path = os.path.join("hiraganaApp_project/sounds", file)
+    path = os.path.join("sounds", file)
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = f.read()
