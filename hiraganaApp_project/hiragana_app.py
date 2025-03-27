@@ -22,29 +22,26 @@ def set_background(image_path):
             width: 100px;
             z-index: 1;
         }}
-        @media screen and (max-width: 600px) {{
-            .character {{
-                width: 80px;
-                bottom: 100px;
-            }}
-            .stButton>button {{
-                font-size: 20px;
-                padding: 0.5em 1em;
-            }}
-            .quiz-box {{
-                font-size: 48px;
-            }}
+        .quiz-box {{
+            background-color: #ffeef5;
+            padding: 1em 2em;
+            margin: 20px auto;
+            text-align: center;
+            font-size: 72px;
+            font-weight: bold;
+            border-radius: 20px;
+            width: fit-content;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }}
-        .choice-row {{
+        .choices-container {{
             display: flex;
             flex-direction: row;
             justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
             gap: 20px;
+            flex-wrap: wrap;
             margin-top: 20px;
         }}
-        .choice-row .stButton>button {{
+        .choices-container .stButton>button {{
             font-size: 36px;
             padding: 1em 2em;
             min-width: 100px;
@@ -53,6 +50,19 @@ def set_background(image_path):
             border-radius: 20px;
             border: none;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+        }}
+        @media screen and (max-width: 600px) {{
+            .character {{
+                width: 80px;
+                bottom: 100px;
+            }}
+            .quiz-box {{
+                font-size: 56px;
+            }}
+            .choices-container {{
+                flex-direction: column;
+                align-items: center;
+            }}
         }}
         </style>
         """, unsafe_allow_html=True)
@@ -126,7 +136,7 @@ else:
     choices = wrong_choices + [correct]
     random.shuffle(choices)
 
-    st.markdown('<div class="choice-row">', unsafe_allow_html=True)
+    st.markdown('<div class="choices-container">', unsafe_allow_html=True)
     for choice in choices:
         if st.button(choice, key=choice):
             if choice == correct:
