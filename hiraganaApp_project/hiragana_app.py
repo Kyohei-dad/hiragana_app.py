@@ -35,8 +35,8 @@ def show_character(image_path):
         <img src="data:image/png;base64,{encoded}" class="character">
         """, unsafe_allow_html=True)
 
-set_background("bg/background.png")
-show_character("bg/character.png")
+set_background("hiraganaApp_project/bg/background.png")
+show_character("hiraganaApp_project/bg/character.png")
 
 # カスタムCSS（見やすさとサイズ強化）
 st.markdown("""
@@ -107,7 +107,7 @@ if 'current_question' not in st.session_state:
     st.session_state.current_question = None
 
 def play_sound(file):
-    path = os.path.join("sounds", file)
+    path = os.path.join("hiraganaApp_project/sounds", file)
     if os.path.exists(path):
         with open(path, "rb") as f:
             data = f.read()
