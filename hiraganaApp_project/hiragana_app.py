@@ -8,23 +8,31 @@ def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
         encoded = base64.b64encode(data).decode()
-        st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{encoded}");
-            background-size: cover;
-            background-position: center;
-        }}
-        .character {{
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 150px;
-            opacity: 0.9;
-            z-index: 1;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+      st.markdown("""
+<style>
+.character {
+    position: absolute;
+    bottom: 80px;  /* ← ここでキャラの位置を上にずらす */
+    right: 10px;
+    width: 100px;
+    z-index: 1;
+}
+@media screen and (max-width: 600px) {
+    .character {
+        width: 80px;
+        bottom: 100px;
+    }
+    .stButton>button {
+        font-size: 20px;
+        padding: 0.5em 1em;
+    }
+    .quiz-box {
+        font-size: 48px;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # キャラクター画像を表示する関数
 def show_character(image_path):
