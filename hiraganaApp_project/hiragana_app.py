@@ -77,10 +77,18 @@ def set_background(image_path):
 
 set_background("bg/background.png")
 
+def load_character_image(image_path):
+    with open(image_path, "rb") as f:
+        data = f.read()
+        encoded = base64.b64encode(data).decode()
+        return f'<img src="data:image/png;base64,{encoded}" class="character-img">'
+
 st.markdown("""
 <div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>
-<img src='bg/character.png' class='character-img'>
 """, unsafe_allow_html=True)
+
+st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
+
 
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
