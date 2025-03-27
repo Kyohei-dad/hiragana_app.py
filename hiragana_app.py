@@ -3,7 +3,7 @@ import random
 import os
 import base64
 
-# 背景画像を表示する関数
+# 背景画像の設定
 def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
@@ -14,7 +14,9 @@ def set_background(image_path):
             background-image: url("data:image/png;base64,{encoded}");
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
         }}
+
         .character-img {{
             position: fixed;
             bottom: 10px;
@@ -22,65 +24,74 @@ def set_background(image_path):
             width: 100px;
             z-index: 1000;
         }}
+
         .quiz-box {{
-            background-color: rgba(255, 255, 255, 0.85);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 1em 2em;
             margin: 20px auto;
             text-align: center;
             font-size: 96px;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 30px;
             width: fit-content;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            color: #000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            color: #222;
         }}
+
         .choices-container {{
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 30px;
         }}
+
         .choices-container .stButton>button {{
-            font-size: 48px;
+            font-size: 56px;
             padding: 1em 2em;
-            min-width: 120px;
+            min-width: 140px;
             background-color: #f28ab2;
             color: white;
-            border-radius: 20px;
+            border-radius: 30px;
             border: none;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0px 6px 12px rgba(0,0,0,0.3);
             transition: transform 0.2s, background-color 0.3s;
         }}
+
         .choices-container .stButton>button:hover {{
-            transform: scale(1.05);
+            transform: scale(1.1);
             background-color: #ff9ac2;
         }}
+
         .main-menu {{
-            background-color: rgba(255,255,255,0.8);
+            background-color: rgba(255,255,255,0.85);
             padding: 2em;
-            border-radius: 16px;
+            border-radius: 20px;
             width: fit-content;
             margin: auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
             text-align: center;
         }}
+
         .start-button {{
-            font-size: 28px;
-            padding: 0.75em 1.5em;
-            border-radius: 10px;
+            font-size: 30px;
+            padding: 0.75em 2em;
+            border-radius: 12px;
             background-color: #ffd966;
             color: #663399;
             font-weight: bold;
             border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: transform 0.2s, background-color 0.3s;
         }}
+
         .start-button:hover {{
-            transform: scale(1.05);
+            transform: scale(1.1);
             background-color: #ffec99;
         }}
+
         @media screen and (max-width: 600px) {{
             .character-img {{
                 width: 80px;
@@ -96,32 +107,34 @@ def set_background(image_path):
             }}
         }}
         </style>
-        <script>
-        const correctSound = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-        const hoverSound = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-        document.addEventListener("DOMContentLoaded", function () {{
-            document.querySelectorAll("button").forEach(btn => {{
-                btn.addEventListener("mouseover", () => hoverSound.play());
-            }});
-        }});
-        </script>
         """, unsafe_allow_html=True)
 
-set_background("bg/background.png")
-
-# キャラクター画像をbase64で表示
+# キャラクター画像読み込み
 def load_character_image(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
         encoded = base64.b64encode(data).decode()
         return f'<img src="data:image/png;base64,{encoded}" class="character-img">'
 
-st.markdown("""
-<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>
-""", unsafe_allow_html=True)
+# 音を再生
+def play_sound(file):
+    path = os.path.join("sounds", file)
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            data = f.read()
+            b64 = base64.b64encode(data).decode()
+            st.markdown(f"""
+                <audio autoplay>
+                    <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+                </audio>
+            """, unsafe_allow_html=True)
 
+# 設定スタート
+set_background("bg/background.png")
+st.markdown("<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>", unsafe_allow_html=True)
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
 
+# データセット
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
     ("か", "カ"), ("き", "キ"), ("く", "ク"), ("け", "ケ"), ("こ", "コ"),
@@ -135,6 +148,7 @@ kana_pairs = [
     ("わ", "ワ"), ("を", "ヲ"), ("ん", "ン")
 ]
 
+# セッション状態初期化
 if 'score_history' not in st.session_state:
     st.session_state.score_history = []
 if 'questions' not in st.session_state:
@@ -146,18 +160,7 @@ if 'correct_count' not in st.session_state:
 if 'current_question' not in st.session_state:
     st.session_state.current_question = None
 
-def play_sound(file):
-    path = os.path.join("sounds", file)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            data = f.read()
-            b64 = base64.b64encode(data).decode()
-            st.markdown(f"""
-                <audio autoplay>
-                    <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-                </audio>
-            """, unsafe_allow_html=True)
-
+# ホーム画面
 if not st.session_state.questions:
     st.markdown("<div class='main-menu'>", unsafe_allow_html=True)
     st.write("### 今までのスコア")
@@ -175,6 +178,7 @@ if not st.session_state.questions:
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
+# クイズ画面
 else:
     hira, correct = st.session_state.current_question
     st.markdown(f"<div class='quiz-box'>{hira}</div>", unsafe_allow_html=True)
