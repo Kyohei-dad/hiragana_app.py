@@ -57,7 +57,7 @@ def set_background(image_path):
                 bottom: 100px;
             }}
             .quiz-box {{
-                font-size: 56px;
+                font-size: 100px;
             }}
             .choices-container {{
                 flex-direction: column;
