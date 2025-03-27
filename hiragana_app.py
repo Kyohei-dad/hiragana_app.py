@@ -2,9 +2,6 @@ import streamlit as st
 import random
 import os
 import base64
-import time
-import matplotlib.pyplot as plt
-import io
 
 # 背景画像の設定
 def set_background(image_path):
@@ -13,11 +10,12 @@ def set_background(image_path):
         encoded = base64.b64encode(data).decode()
         st.markdown(f"""
         <style>
-        .stApp {{
+        body {{
             background-image: url("data:image/png;base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            overflow-x: hidden;
         }}
 
         .character-img {{
@@ -51,7 +49,7 @@ def set_background(image_path):
             margin-top: 30px;
         }}
 
-        .choices-container .stButton>button {{
+        .choice-button {{
             font-size: 56px;
             padding: 1em 2em;
             min-width: 140px;
@@ -61,54 +59,27 @@ def set_background(image_path):
             border: none;
             box-shadow: 0px 6px 12px rgba(0,0,0,0.3);
             transition: transform 0.2s, background-color 0.3s;
+            cursor: pointer;
         }}
 
-        .choices-container .stButton>button:hover {{
+        .choice-button:hover {{
             transform: scale(1.1);
             background-color: #ff9ac2;
         }}
 
-        .main-menu {{
-            background-color: rgba(255,255,255,0.85);
-            padding: 2em;
-            border-radius: 20px;
-            width: fit-content;
-            margin: auto;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-            text-align: center;
+        .star-pop {{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            font-size: 80px;
+            animation: pop-star 1s ease-in-out forwards;
+            z-index: 9999;
         }}
 
-        .start-button {{
-            font-size: 30px;
-            padding: 0.75em 2em;
-            border-radius: 12px;
-            background-color: #ffd966;
-            color: #663399;
-            font-weight: bold;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.2s, background-color 0.3s;
-        }}
-
-        .start-button:hover {{
-            transform: scale(1.1);
-            background-color: #ffec99;
-        }}
-
-        @media screen and (max-width: 600px) {{
-            .character-img {{
-                width: 80px;
-                bottom: 10px;
-                right: 10px;
-            }}
-            .quiz-box {{
-                font-size: 72px;
-            }}
-            .choices-container .stButton>button {{
-                font-size: 42px;
-                min-width: 100px;
-                padding: 0.5em 1em;
-            }}
+        @keyframes pop-star {{
+            0% {{ transform: scale(0.2) translateY(20px); opacity: 0; }}
+            50% {{ transform: scale(1.2) translateY(-20px); opacity: 1; }}
+            100% {{ transform: scale(1) translateY(-40px); opacity: 0; }}
         }}
         </style>
         """, unsafe_allow_html=True)
@@ -124,13 +95,9 @@ def load_character_image(image_path):
 def play_sound(file):
     path = os.path.join("sounds", file)
     if os.path.exists(path):
-        st.markdown(f"""
-        <audio autoplay>
-            <source src="data:audio/mp3;base64,{base64.b64encode(open(path,'rb').read()).decode()}" type="audio/mp3">
-        </audio>
-        """, unsafe_allow_html=True)
+        st.audio(path, format="audio/mp3", start_time=0)
 
-# 背景セット
+# 設定スタート
 set_background("bg/background.png")
 st.markdown("<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>", unsafe_allow_html=True)
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
@@ -138,19 +105,10 @@ st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
     ("が", "ガ"), ("ぎ", "ギ"), ("ぐ", "グ"), ("げ", "ゲ"), ("ご", "ゴ"),
-    ("ざ", "ザ"), ("じ", "ジ"), ("ず", "ズ"), ("ぜ", "ゼ"), ("ぞ", "ゾ"),
-    ("だ", "ダ"), ("ぢ", "ヂ"), ("づ", "ヅ"), ("で", "デ"), ("ど", "ド"),
-    ("ば", "バ"), ("び", "ビ"), ("ぶ", "ブ"), ("べ", "ベ"), ("ぼ", "ボ"),
-    ("ぱ", "パ"), ("ぴ", "ピ"), ("ぷ", "プ"), ("ぺ", "ペ"), ("ぽ", "ポ"),
-    ("か", "カ"), ("き", "キ"), ("く", "ク"), ("け", "ケ"), ("こ", "コ"),
     ("さ", "サ"), ("し", "シ"), ("す", "ス"), ("せ", "セ"), ("そ", "ソ"),
     ("た", "タ"), ("ち", "チ"), ("つ", "ツ"), ("て", "テ"), ("と", "ト"),
-    ("な", "ナ"), ("に", "ニ"), ("ぬ", "ヌ"), ("ね", "ネ"), ("の", "ノ"),
-    ("は", "ハ"), ("ひ", "ヒ"), ("ふ", "フ"), ("へ", "ヘ"), ("ほ", "ホ"),
-    ("ま", "マ"), ("み", "ミ"), ("む", "ム"), ("め", "メ"), ("も", "モ"),
-    ("や", "ヤ"), ("ゆ", "ユ"), ("よ", "ヨ"),
-    ("ら", "ラ"), ("り", "リ"), ("る", "ル"), ("れ", "レ"), ("ろ", "ロ"),
-    ("わ", "ワ"), ("を", "ヲ"), ("ん", "ン")
+    ("ぱ", "パ"), ("ぴ", "ピ"), ("ぷ", "プ"), ("ぺ", "ペ"), ("ぽ", "ポ"),
+    ("ん", "ン")
 ]
 
 if 'score_history' not in st.session_state:
@@ -161,37 +119,23 @@ if 'current_index' not in st.session_state:
     st.session_state.current_index = 0
 if 'correct_count' not in st.session_state:
     st.session_state.correct_count = 0
-if 'correct_log' not in st.session_state:
-    st.session_state.correct_log = []
 if 'current_question' not in st.session_state:
     st.session_state.current_question = None
 
 if not st.session_state.questions:
-    st.markdown("<div class='main-menu'>", unsafe_allow_html=True)
     st.write("### 今までのスコア")
     if st.session_state.score_history:
         for i, s in enumerate(st.session_state.score_history):
             st.write(f"{i+1}回目: {s}/10")
-
-        # グラフ表示
-        fig, ax = plt.subplots()
-        ax.plot(range(1, len(st.session_state.score_history)+1), st.session_state.score_history, marker='o')
-        ax.set_title("スコアの推移")
-        ax.set_xlabel("回")
-        ax.set_ylabel("正解数")
-        st.pyplot(fig)
-
     else:
         st.write("(まだ記録なし)")
 
-    if st.button("💡 クイズスタート！", key="start", use_container_width=True):
+    if st.button("💡 クイズスタート！"):
         st.session_state.questions = random.sample(kana_pairs, 10)
         st.session_state.current_index = 0
         st.session_state.correct_count = 0
-        st.session_state.correct_log = []
         st.session_state.current_question = st.session_state.questions[0]
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 else:
     hira, correct = st.session_state.current_question
@@ -203,22 +147,23 @@ else:
 
     st.markdown('<div class="choices-container">', unsafe_allow_html=True)
     for choice in choices:
-        if st.button(choice, key=choice):
-            if choice == correct:
-                st.success("⭕ ピンポン！")
-                play_sound("correct.mp3")
-                st.balloons()
-                st.session_state.correct_count += 1
-                st.session_state.correct_log.append(1)
-                st.session_state.current_index += 1
-                if st.session_state.current_index < 10:
-                    st.session_state.current_question = st.session_state.questions[st.session_state.current_index]
-                else:
-                    st.session_state.score_history.append(st.session_state.correct_count)
-                    st.session_state.questions = []
-                st.rerun()
-            else:
-                st.error("❌ ブブー！ もう一度！")
-                play_sound("wrong.mp3")
-                st.session_state.correct_log.append(0)
+        html = f'''<button class="choice-button" onclick="fetch('/?choice={choice}', {{method: 'POST'}})">{choice}</button>'''
+        st.markdown(html, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
+    clicked = st.experimental_get_query_params().get("choice", [None])[0]
+    if clicked:
+        if clicked == correct:
+            st.markdown("<div class='star-pop'>⭐</div>", unsafe_allow_html=True)
+            play_sound("correct.mp3")
+            st.session_state.correct_count += 1
+            st.session_state.current_index += 1
+            if st.session_state.current_index < 10:
+                st.session_state.current_question = st.session_state.questions[st.session_state.current_index]
+            else:
+                st.session_state.score_history.append(st.session_state.correct_count)
+                st.session_state.questions = []
+            st.rerun()
+        else:
+            st.error("❌ ブブー！ もう一度！")
+            play_sound("wrong.mp3")
