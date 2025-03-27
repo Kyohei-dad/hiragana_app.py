@@ -53,11 +53,11 @@ def set_background(image_path):
         }}
         @media screen and (max-width: 600px) {{
             .character {{
-                width: 80px;
-                bottom: 100px;
+                width: 70px;
+                bottom: 90px;
             }}
             .quiz-box {{
-                font-size: 100px;
+                font-size: 80px;
             }}
             .choices-container {{
                 flex-direction: column;
