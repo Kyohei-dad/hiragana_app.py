@@ -77,6 +77,7 @@ def set_background(image_path):
 
 set_background("bg/background.png")
 
+# キャラクター画像をbase64で表示
 def load_character_image(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
@@ -88,7 +89,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
-
 
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
