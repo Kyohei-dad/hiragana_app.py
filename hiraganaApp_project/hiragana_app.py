@@ -8,100 +8,64 @@ def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
         encoded = base64.b64encode(data).decode()
-    st.markdown("""
-<style>
-.character {
-    position: absolute;
-    bottom: 80px;
-    right: 10px;
-    width: 100px;
-    z-index: 1;
-}
-/* ←ここまでがもともとのCSS */
-
-/* ⬇ここから追加！ */
-.choice-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-.choice-button {
-    background-color: #f28ab2;
-    color: white;
-    font-size: 36px;
-    border-radius: 20px;
-    border: none;
-    padding: 1em 2em;
-    margin: 0.5em;
-    min-width: 100px;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-}
-.choice-button:hover {
-    background-color: #f15ca4;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-
-# キャラクター画像を表示する関数
-def show_character(image_path):
-    with open(image_path, "rb") as f:
-        data = f.read()
-        encoded = base64.b64encode(data).decode()
         st.markdown(f"""
-        <img src="data:image/png;base64,{encoded}" class="character">
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+        }}
+        .character {{
+            position: absolute;
+            bottom: 80px;
+            right: 10px;
+            width: 100px;
+            z-index: 1;
+        }}
+        @media screen and (max-width: 600px) {{
+            .character {{
+                width: 80px;
+                bottom: 100px;
+            }}
+            .stButton>button {{
+                font-size: 20px;
+                padding: 0.5em 1em;
+            }}
+            .quiz-box {{
+                font-size: 48px;
+            }}
+        }}
+        .choice-container {{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }}
+        .choice-button {{
+            background-color: #f28ab2;
+            color: white;
+            font-size: 36px;
+            border-radius: 20px;
+            border: none;
+            padding: 1em 2em;
+            margin: 0.5em;
+            min-width: 100px;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+        }}
+        .choice-button:hover {{
+            background-color: #f15ca4;
+        }}
+        </style>
         """, unsafe_allow_html=True)
 
 set_background("hiraganaApp_project/bg/background.png")
-show_character("hiraganaApp_project/bg/character.png")
 
-# カスタムCSS（見やすさとサイズ強化）
 st.markdown("""
-<style>
-html, body, [class*="css"] {
-    font-family: "Rounded Mplus 1c", "Comic Sans MS", cursive, sans-serif;
-    color: #333;
-}
-.stButton>button {
-    background-color: #f28ab2;
-    color: white;
-    font-size: 48px;
-    border-radius: 20px;
-    border: none;
-    padding: 1em 2em;
-    margin: 1em;
-    box-shadow: 0px 6px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease-in-out;
-}
-.stButton>button:hover {
-    transform: scale(1.07);
-    background-color: #f15ca4;
-}
-.quiz-box {
-    background-color: #fff8fb;
-    padding: 30px;
-    border-radius: 30px;
-    margin: 20px 0;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    text-align: center;
-    font-size: 80px;
-    color: #cc0066;
-    font-weight: bold;
-}
-.title-text {
-    font-size: 48px;
-    text-align: center;
-    color: #d63384;
-    margin-bottom: 20px;
-}
-</style>
+<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>
+<img src='hiraganaApp_project/bg/character.png' class='character'>
 """, unsafe_allow_html=True)
-
-st.markdown("<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>", unsafe_allow_html=True)
 
 kana_pairs = [
     ("あ", "ア"), ("い", "イ"), ("う", "ウ"), ("え", "エ"), ("お", "オ"),
@@ -165,10 +129,10 @@ else:
     choices = wrong_choices + [correct]
     random.shuffle(choices)
 
-    colA, colB, colC = st.columns(3)
-    for i, col in enumerate([colA, colB, colC]):
-        if col.button(choices[i]):
-            if choices[i] == correct:
+    st.markdown('<div class="choice-container">', unsafe_allow_html=True)
+    for choice in choices:
+        if st.button(choice, key=choice):
+            if choice == correct:
                 st.success("⭕ ピンポン！")
                 play_sound("correct.mp3")
                 st.session_state.correct_count += 1
@@ -182,3 +146,4 @@ else:
             else:
                 st.error("❌ ブブー！ もう一度！")
                 play_sound("wrong.mp3")
+    st.markdown('</div>', unsafe_allow_html=True)
