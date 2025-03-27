@@ -53,6 +53,35 @@ def set_background(image_path):
             border: none;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
         }}
+        .main-menu {{
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2em;
+            margin: 2em auto;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }}
+        .main-menu h1 {{
+            font-size: 48px;
+            margin-bottom: 1em;
+            color: #e91e63;
+            font-family: 'Comic Sans MS', cursive;
+        }}
+        .main-menu .score {{
+            font-size: 24px;
+            color: #555;
+            margin-bottom: 1.5em;
+        }}
+        .main-menu .start-btn button {{
+            font-size: 28px;
+            padding: 1em 2em;
+            background-color: #ffca28;
+            color: #000;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+        }}
         @media screen and (max-width: 600px) {{
             .character-img {{
                 width: 80px;
@@ -61,11 +90,6 @@ def set_background(image_path):
             }}
             .quiz-box {{
                 font-size: 72px;
-            }}
-            .choices-container {{
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
             }}
             .choices-container .stButton>button {{
                 font-size: 42px;
@@ -83,10 +107,6 @@ def load_character_image(image_path):
         data = f.read()
         encoded = base64.b64encode(data).decode()
         return f'<img src="data:image/png;base64,{encoded}" class="character-img">'
-
-st.markdown("""
-<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>
-""", unsafe_allow_html=True)
 
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
 
@@ -127,22 +147,34 @@ def play_sound(file):
             """, unsafe_allow_html=True)
 
 if not st.session_state.questions:
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.write("### 今までのスコア")
-        if st.session_state.score_history:
-            for i, s in enumerate(st.session_state.score_history):
-                st.write(f"{i+1}回目: {s}/10")
-        else:
-            st.write("(まだ記録なし)")
+    st.markdown("""
+    <div class="main-menu">
+        <h1>🌟えまちゃんの かたかな あぷり🌟</h1>
+        <div class="score">
+    """, unsafe_allow_html=True)
 
-    with col2:
-        if st.button("💡 クイズスタート！"):
-            st.session_state.questions = random.sample(kana_pairs, 10)
-            st.session_state.current_index = 0
-            st.session_state.correct_count = 0
-            st.session_state.current_question = st.session_state.questions[0]
-            st.rerun()
+    if st.session_state.score_history:
+        for i, s in enumerate(st.session_state.score_history):
+            st.write(f"{i+1}回目: {s}/10")
+    else:
+        st.write("(まだ記録なし)")
+
+    st.markdown("""
+        </div>
+        <div class="start-btn">
+    """, unsafe_allow_html=True)
+
+    if st.button("💡 クイズスタート！"):
+        st.session_state.questions = random.sample(kana_pairs, 10)
+        st.session_state.current_index = 0
+        st.session_state.correct_count = 0
+        st.session_state.current_question = st.session_state.questions[0]
+        st.rerun()
+
+    st.markdown("""
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 else:
     hira, correct = st.session_state.current_question
