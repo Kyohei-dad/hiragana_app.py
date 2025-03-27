@@ -51,20 +51,21 @@ def set_background(image_path):
             border: none;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
         }}
-        @media screen and (max-width: 600px) {{
-            .character {{
-                width: 70px;
-                bottom: 90px;
-            }}
-            .quiz-box {{
-                font-size: 60px;
-            }}
-           .choices-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    flex-direction: row !important;  /* ← これが重要！ */
-    gap: 20px;
+       @media screen and (max-width: 600px) {
+    .character {
+        width: 80px;
+        bottom: 90px;
+    }
+    .quiz-box {
+        font-size: 60px;
+    }
+    .choices-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: row !important;
+        gap: 20px;
+    }
 }
         }}
         </style>
