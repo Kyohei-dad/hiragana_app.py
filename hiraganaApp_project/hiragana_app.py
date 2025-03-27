@@ -8,30 +8,43 @@ def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
         encoded = base64.b64encode(data).decode()
-      st.markdown("""
+    st.markdown("""
 <style>
 .character {
     position: absolute;
-    bottom: 80px;  /* ← ここでキャラの位置を上にずらす */
+    bottom: 80px;
     right: 10px;
     width: 100px;
     z-index: 1;
 }
-@media screen and (max-width: 600px) {
-    .character {
-        width: 80px;
-        bottom: 100px;
-    }
-    .stButton>button {
-        font-size: 20px;
-        padding: 0.5em 1em;
-    }
-    .quiz-box {
-        font-size: 48px;
-    }
+/* ←ここまでがもともとのCSS */
+
+/* ⬇ここから追加！ */
+.choice-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.choice-button {
+    background-color: #f28ab2;
+    color: white;
+    font-size: 36px;
+    border-radius: 20px;
+    border: none;
+    padding: 1em 2em;
+    margin: 0.5em;
+    min-width: 100px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+.choice-button:hover {
+    background-color: #f15ca4;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # キャラクター画像を表示する関数
