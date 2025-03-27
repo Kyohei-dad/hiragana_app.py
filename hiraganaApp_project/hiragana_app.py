@@ -59,10 +59,13 @@ def set_background(image_path):
             .quiz-box {{
                 font-size: 60px;
             }}
-            .choices-container {{
-                flex-direction: column;
-                align-items: center;
-            }}
+           .choices-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row !important;  /* ← これが重要！ */
+    gap: 20px;
+}
         }}
         </style>
         """, unsafe_allow_html=True)
