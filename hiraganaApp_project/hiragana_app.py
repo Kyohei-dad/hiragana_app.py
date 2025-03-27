@@ -44,9 +44,9 @@ def set_background(image_path):
             margin-top: 20px;
         }}
         .choices-container .stButton>button {{
-            font-size: 36px;
+            font-size: 48px;
             padding: 1em 2em;
-            min-width: 100px;
+            min-width: 120px;
             background-color: #f28ab2;
             color: white;
             border-radius: 20px;
@@ -62,7 +62,13 @@ def set_background(image_path):
                 font-size: 72px;
             }}
             .choices-container {{
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }}
+            .choices-container .stButton>button {{
+                font-size: 42px;
+                min-width: 100px;
             }}
         }}
         </style>
