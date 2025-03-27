@@ -16,11 +16,11 @@ def set_background(image_path):
             background-position: center;
         }}
         .character {{
-            position: absolute;
-            bottom: 80px;
+            position: fixed;
+            bottom: 10px;
             right: 10px;
             width: 100px;
-            z-index: 1;
+            z-index: 1000;
         }}
         .quiz-box {{
             background-color: rgba(255, 255, 255, 0.85);
@@ -56,7 +56,8 @@ def set_background(image_path):
         @media screen and (max-width: 600px) {{
             .character {{
                 width: 80px;
-                bottom: 90px;
+                bottom: 10px;
+                right: 10px;
             }}
             .quiz-box {{
                 font-size: 72px;
