@@ -16,13 +16,23 @@ def set_background(image_path):
             background-position: center;
             background-attachment: fixed;
             overflow-x: hidden;
+            font-family: 'Comic Sans MS', 'Rounded Mplus 1c', sans-serif;
+        }}
+
+        .title-text {{
+            text-align: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px #ff69b4;
+            margin-top: 20px;
         }}
 
         .character-img {{
             position: fixed;
             bottom: 10px;
             right: 10px;
-            width: 100px;
+            width: 120px;
             z-index: 1000;
         }}
 
@@ -58,7 +68,7 @@ def set_background(image_path):
             border-radius: 30px;
             border: none;
             box-shadow: 0px 6px 12px rgba(0,0,0,0.3);
-            transition: transform 0.2s, background-color 0.3s;
+            transition: all 0.3s ease;
             cursor: pointer;
         }}
 
@@ -78,10 +88,16 @@ def set_background(image_path):
 
         @keyframes pop-star {{
             0% {{ transform: scale(0.2) translateY(20px); opacity: 0; }}
-            50% {{ transform: scale(1.2) translateY(-20px); opacity: 1; }}
+            50% {{ transform: scale(1.5) translateY(-10px); opacity: 1; }}
             100% {{ transform: scale(1) translateY(-40px); opacity: 0; }}
         }}
         </style>
+        <script>
+        function playHoverSound() {{
+            const audio = new Audio('sounds/click.mp3');
+            audio.play();
+        }}
+        </script>
         """, unsafe_allow_html=True)
 
 # キャラクター画像読み込み
@@ -97,7 +113,7 @@ def play_sound(file):
     if os.path.exists(path):
         st.audio(path, format="audio/mp3", start_time=0)
 
-# 設定スタート
+# スタート
 set_background("bg/background.png")
 st.markdown("<div class='title-text'>🌟えまちゃんの かたかな あぷり🌟</div>", unsafe_allow_html=True)
 st.markdown(load_character_image("bg/character.png"), unsafe_allow_html=True)
@@ -147,7 +163,7 @@ else:
 
     st.markdown('<div class="choices-container">', unsafe_allow_html=True)
     for choice in choices:
-        html = f'''<button class="choice-button" onclick="fetch('/?choice={choice}', {{method: 'POST'}})">{choice}</button>'''
+        html = f'''<button class="choice-button" onclick="playHoverSound(); document.location.search='?choice={choice}'">{choice}</button>'''
         st.markdown(html, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
