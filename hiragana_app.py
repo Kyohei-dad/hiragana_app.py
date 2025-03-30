@@ -63,18 +63,18 @@ def set_background(image_path):
             font-size: 56px;
             padding: 1em 2em;
             min-width: 140px;
-            background-color: #f28ab2;
+            background: linear-gradient(to bottom, #ffb6c1, #ff69b4);
             color: white;
             border-radius: 30px;
-            border: none;
-            box-shadow: 0px 6px 12px rgba(0,0,0,0.3);
+            border: 2px solid #ff69b4;
+            box-shadow: 0px 6px 12px rgba(255,105,180,0.5);
             transition: all 0.3s ease;
             cursor: pointer;
         }}
 
         .choice-button:hover {{
             transform: scale(1.1);
-            background-color: #ff9ac2;
+            background: linear-gradient(to bottom, #ffc0cb, #ff69b4);
         }}
 
         .star-pop {{
