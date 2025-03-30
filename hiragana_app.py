@@ -92,12 +92,6 @@ def set_background(image_path):
             100% {{ transform: scale(1) translateY(-40px); opacity: 0; }}
         }}
         </style>
-        <script>
-        function playHoverSound() {{
-            const audio = new Audio('sounds/click.mp3');
-            audio.play();
-        }}
-        </script>
         """, unsafe_allow_html=True)
 
 # キャラクター画像読み込み
@@ -137,6 +131,8 @@ if 'correct_count' not in st.session_state:
     st.session_state.correct_count = 0
 if 'current_question' not in st.session_state:
     st.session_state.current_question = None
+if 'clicked' not in st.session_state:
+    st.session_state.clicked = None
 
 if not st.session_state.questions:
     st.write("### 今までのスコア")
@@ -151,6 +147,7 @@ if not st.session_state.questions:
         st.session_state.current_index = 0
         st.session_state.correct_count = 0
         st.session_state.current_question = st.session_state.questions[0]
+        st.session_state.clicked = None
         st.rerun()
 
 else:
@@ -163,11 +160,11 @@ else:
 
     st.markdown('<div class="choices-container">', unsafe_allow_html=True)
     for choice in choices:
-        html = f'''<button class="choice-button" onclick="playHoverSound(); document.location.search='?choice={choice}'">{choice}</button>'''
-        st.markdown(html, unsafe_allow_html=True)
+        if st.button(choice):
+            st.session_state.clicked = choice
     st.markdown('</div>', unsafe_allow_html=True)
 
-    clicked = st.query_params.get("choice", [None])[0]
+    clicked = st.session_state.clicked
     if clicked:
         if clicked == correct:
             st.markdown("<div class='star-pop'>⭐</div>", unsafe_allow_html=True)
@@ -176,10 +173,13 @@ else:
             st.session_state.current_index += 1
             if st.session_state.current_index < 10:
                 st.session_state.current_question = st.session_state.questions[st.session_state.current_index]
+                st.session_state.clicked = None
             else:
                 st.session_state.score_history.append(st.session_state.correct_count)
                 st.session_state.questions = []
+                st.session_state.clicked = None
             st.rerun()
         else:
             st.error("❌ ブブー！ もう一度！")
             play_sound("wrong.mp3")
+            st.session_state.clicked = None
